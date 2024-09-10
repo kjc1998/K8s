@@ -1,0 +1,39 @@
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-web
+spec:
+  type: LoadBalancer
+  selector:
+    app: hello-web
+  ports:
+  - port: 8080
+    targetPort: 3000
+
+---
+
+# Node Image Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-web
+  template:
+    metadata:
+      labels:
+        app: hello-web
+    spec:
+      containers:
+      - name: hello-web
+        image: kjchow/node-hello-web:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+          - containerPort: 3000
